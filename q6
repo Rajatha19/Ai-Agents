@@ -1,0 +1,23 @@
+sudo systemctl start docker
+mkdir cd
+gedit app.py
+import redis
+result=redis.Redis(host="redis",port=6379)
+result.incr("count")
+print("Count",result.get("count").decode())
+gedit Dockerfile
+FROM python:3.11
+RUN pip install redis
+COPY app.py .
+CMD["python","app.py"]
+gedit docker-compose.yml
+services:
+ app:
+  build:.
+  depend_on:[redis]
+ redis:
+  image:redis
+  volumes:[redis-data:/data]
+Volumes:
+ redis-data:
+docker-compose up --build
