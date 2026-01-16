@@ -1,0 +1,30 @@
+mkdir q7
+cd q7
+pip install dvc
+git init
+dvc init
+mkdir data
+cd data
+mkdir processed
+cd processed
+cd..
+mkdir raw
+cd raw
+gedit data.csv
+1,10,
+2,20
+3,30
+cd.. 
+cd..
+mkdir scripts
+cd scripts
+gedit clean.py
+import pandas as pd
+df=pd.read_csv("data/raw/data.csv",header=None)
+df.columns=["id","value"]
+df["value"]*=2
+df to_csv("data/preprocessed/clean.csv",index=False)
+cd..
+dvc stage add -n clean -d scripts/clean.py -d data/raw/data.csv -o data/processed/clean.csv python scripts/clean.py
+git commit
+dvc repro
